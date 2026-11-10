@@ -25,6 +25,8 @@ same contract lives in `python/`.
 npm install
 npm run dev        # http://localhost:5173
 npm run build
+npm run lint && npm run typecheck
+npm test           # Vitest: parity with python/test_booking.py + regression tests
 ```
 
 ## Python reference
@@ -36,6 +38,11 @@ python3 test_booking.py
 
 ## Files
 
-- `src/App.tsx` — the whole UI and the availability check.
+- `src/App.tsx` — the UI (test conditions, request form, result banner, timeline, rules card).
+- `src/lib/availability.ts` — `canBook()`, `parseMinutes()`, `toHHMM()`: the AC1–AC5 rules as pure functions.
+- `tests/` — Vitest suites: `availability.parity.test.ts` (Python cases ported 1:1) and
+  `availability.regression.test.ts` (whole-minute input and `now` range, risks R1/R2).
 - `python/booking.py` — `can_book()` reference implementation.
-- `python/test_booking.py` — 10 unit tests.
+- `python/test_booking.py` — 12 unit tests.
+- `AGENTS.md` — rules for AI coding agents (scope, safe commands, forbidden actions, review gate).
+- `docs/practice10/` — Practice #10 risk review, risk register, audits and recorded evidence.
