@@ -1,16 +1,6 @@
 import { useState } from 'react';
 import { CalendarClock, CheckCircle2, Clock, Lock, ShieldCheck, Unlock, XCircle } from 'lucide-react';
-
-type Booking = { start: number; end: number; label: string };
-
-type CheckResult = {
-  available: boolean;
-  rule: string;
-  message: string;
-};
-
-const DAY_MINUTES = 1440;
-const MAX_DURATION = 120;
+import { type Booking, type CheckResult, DAY_MINUTES, canBook, parseMinutes, toHHMM } from './lib/availability';
 
 // Fictional, read-only datasets for Room 304 (no real people, no database).
 const DATASETS: Record<string, { name: string; bookings: Booking[] }> = {
@@ -35,54 +25,6 @@ const PRESETS = [
   { label: '540 → 570', start: 540, end: 570, hint: 'AC1 starts now' },
 ];
 
-function toHHMM(minutes: number): string {
-  if (Number.isNaN(minutes)) return '--:--';
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-}
-
-// Mirrors python/booking.py can_book(start, end, now, blocked, existing)
-function canBook(start: number, end: number, now: number, blocked: boolean, existing: Booking[]): CheckResult {
-  if (Number.isNaN(start) || Number.isNaN(end)) {
-    return { available: false, rule: 'AC1', message: 'Enter start and end as whole minutes after midnight.' };
-  }
-  if (blocked) {
-    return { available: false, rule: 'AC3', message: 'Room 304 is blocked — every request is rejected.' };
-  }
-  if (start < 0 || end > DAY_MINUTES || start >= end) {
-    return {
-      available: false,
-      rule: 'AC1',
-      message: `Times must satisfy 0 ≤ start < end ≤ ${DAY_MINUTES} (got ${start} → ${end}).`,
-    };
-  }
-  if (start <= now) {
-    return {
-      available: false,
-      rule: 'AC1',
-      message: `Start (${toHHMM(start)}) must be strictly after now (${toHHMM(now)}).`,
-    };
-  }
-  if (end - start > MAX_DURATION) {
-    return {
-      available: false,
-      rule: 'AC2',
-      message: `Duration is ${end - start} min; the maximum is ${MAX_DURATION} min.`,
-    };
-  }
-  for (const b of existing) {
-    if (start < b.end && end > b.start) {
-      return {
-        available: false,
-        rule: 'AC4',
-        message: `Overlaps existing booking ${toHHMM(b.start)}–${toHHMM(b.end)} (${b.label}).`,
-      };
-    }
-  }
-  return { available: true, rule: 'OK', message: `Room 304 is free from ${toHHMM(start)} to ${toHHMM(end)}.` };
-}
-
 export default function App() {
   const [now, setNow] = useState(540);
   const [blocked, setBlocked] = useState(false);
@@ -92,8 +34,8 @@ export default function App() {
   const [result, setResult] = useState<CheckResult | null>(null);
 
   const bookings = DATASETS[datasetKey].bookings;
-  const start = parseInt(startInput, 10);
-  const end = parseInt(endInput, 10);
+  const start = parseMinutes(startInput);
+  const end = parseMinutes(endInput);
 
   const runCheck = () => {
     setResult(canBook(start, end, now, blocked, bookings));
