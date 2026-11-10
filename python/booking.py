@@ -15,6 +15,9 @@ def can_book(start: int, end: int, now: int, blocked: bool,
     for value in (start, end, now):
         if not isinstance(value, int) or isinstance(value, bool):
             return False
+    # AC1: now must be a whole minute in 0..1439 (R2)
+    if now < 0 or now >= DAY_MINUTES:
+        return False
     # AC3: a blocked room rejects every request
     if blocked:
         return False

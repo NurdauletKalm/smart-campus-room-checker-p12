@@ -26,7 +26,7 @@ const PRESETS = [
 ];
 
 export default function App() {
-  const [now, setNow] = useState(540);
+  const [nowInput, setNowInput] = useState('540');
   const [blocked, setBlocked] = useState(false);
   const [datasetKey, setDatasetKey] = useState<keyof typeof DATASETS>('single');
   const [startInput, setStartInput] = useState('660');
@@ -34,6 +34,7 @@ export default function App() {
   const [result, setResult] = useState<CheckResult | null>(null);
 
   const bookings = DATASETS[datasetKey].bookings;
+  const now = parseMinutes(nowInput);
   const start = parseMinutes(startInput);
   const end = parseMinutes(endInput);
 
@@ -76,9 +77,9 @@ export default function App() {
               type="number"
               min={0}
               max={1439}
-              value={now}
+              value={nowInput}
               onChange={(e) => {
-                setNow(parseInt(e.target.value, 10) || 0);
+                setNowInput(e.target.value);
                 setResult(null);
               }}
               className="w-28 rounded-lg border border-slate-300 px-3 py-2"

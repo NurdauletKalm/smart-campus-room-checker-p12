@@ -12,8 +12,9 @@ export type CheckResult = {
 export const DAY_MINUTES = 1440;
 export const MAX_DURATION = 120;
 
+// Accepts only plain whole numbers ("660"); anything else ("660.5", "6e2", "", "-30") becomes NaN (R1).
 export function parseMinutes(input: string): number {
-  return parseInt(input, 10);
+  return /^\d+$/.test(input) ? Number(input) : NaN;
 }
 
 export function toHHMM(minutes: number): string {
@@ -30,7 +31,10 @@ export function canBook(
   blocked: boolean,
   existing: readonly Booking[],
 ): CheckResult {
-  if (Number.isNaN(start) || Number.isNaN(end)) {
+  if (!Number.isInteger(now) || now < 0 || now >= DAY_MINUTES) {
+    return { available: false, rule: 'AC1', message: 'Current time now must be a whole minute 0–1439.' };
+  }
+  if (!Number.isInteger(start) || !Number.isInteger(end)) {
     return { available: false, rule: 'AC1', message: 'Enter start and end as whole minutes after midnight.' };
   }
   if (blocked) {

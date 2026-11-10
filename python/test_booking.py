@@ -39,6 +39,15 @@ class TestCanBook(unittest.TestCase):
         self.assertTrue(can_book(660, 720, 540, False, existing))
         self.assertEqual(existing, snapshot)
 
+    # Regression for R2: now must be a whole minute in 0..1439
+    def test_r2_now_out_of_range_rejected(self):
+        self.assertFalse(can_book(0, 60, -30, False, []))
+        self.assertFalse(can_book(660, 720, 1440, False, []))
+
+    def test_r2_now_boundaries_valid(self):
+        self.assertTrue(can_book(60, 120, 0, False, []))
+        self.assertTrue(can_book(1439, 1440, 1438, False, []))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
