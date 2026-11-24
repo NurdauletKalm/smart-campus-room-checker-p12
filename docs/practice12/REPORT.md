@@ -8,6 +8,13 @@
 **Low-code platform:** Appsmith Cloud, free plan (app `Smart Campus Room Checker Low-code`)
 **Repository branch:** `p12/code-vs-lowcode`. Tags: `p10-final` (start), `p12-baseline` (frozen baseline)
 
+| Link | URL |
+|---|---|
+| GitHub repository (public; source, report, screenshots, export) | https://github.com/NurdauletKalm/smart-campus-room-checker-p12 |
+| Live demo: code-based (GitHub Pages; CI runs lint, typecheck and 51 tests before each deploy) | https://nurdauletkalm.github.io/smart-campus-room-checker-p12/ |
+| Live demo: low-code (Appsmith, public) | https://app.appsmith.com/app/smart-campus-room-checker-low-code/page1-6b05a6ca5441f3e820a02aa4 |
+| Low-code export | `lowcode/appsmith-export.json` (Appsmith "Export application"; 0 datasources, no secrets) |
+
 All screenshots in `screenshots/` are **full-desktop captures (1920×1200) taken on my own PC**. They show the real
 Chrome and PowerShell windows. Raw logs are in `evidence/`.
 
@@ -184,7 +191,7 @@ the same JavaScript in both builds, so low-code did not remove the hard part her
 | **Injection / SQL** | No database, no backend, no queries | No datasource or query connected |
 | **DAST (safe manual runtime check)** | Payload `<img src=x onerror=alert(1)>` put in Duration (input forced to text): result `INVALID_DURATION`, **0 dialogs, 0 injected elements** (`screenshots/security_dast_code_xss_probe.png`) | Same payload in Start time on the **deployed** app: `INVALID_INPUT`, **0 dialogs, 0 injected elements** (`screenshots/security_dast_lowcode_xss_probe.png`) |
 | **Secrets** | None in the repo. No `.env`, no API keys (grep). | None. The JS Object uses no APIs, so no keys exist in client-side workflows. |
-| **Permissions / sharing** | Local only. Not deployed yet. | App is **private** (owner only). It must be made public or shared for the instructor's live demo, which needs my decision. Least privilege: no datasources, no connectors. |
+| **Permissions / sharing** | Public static site on GitHub Pages. No backend, data or secrets to expose. The deploy job runs only from `main` with `pages: write` / `id-token: write` permissions. | App was **private** by default. I made it **public (view-only)** for the live demo. A logged-out browser can use it, but editing still needs my workspace login. Least privilege: no datasources, no connectors, no other invited users. |
 | **Connector / AI-agent access** | The AI agent worked in my local folder only. Every change is a reviewed git commit. | The AI agent drove a **separate Chrome profile** where I signed in myself. It never saw or typed my password. |
 | **SCA (dependencies)** | `npm audit`: **runtime deps: 0 vulnerabilities**. Dev/test tooling: 13 (2 critical, 1 high, 10 moderate) in `vitest` → `tinypool`, `@vitest/mocker`, `esbuild` (dev server) and `minimatch`. None ship in the built app. The fix needs a breaking `vitest` upgrade, so it is recorded as a follow-up. | Platform dependencies are **Appsmith's responsibility**. I cannot audit or patch them. My responsibility is limited to my JS Object and the app's sharing settings. |
 | **Update responsibility** | Me: dependency upgrades, rebuild, redeploy | Appsmith: runtime, widgets, hosting and patching. Me: app logic and access. |
@@ -241,5 +248,5 @@ tool connected to a real datasource.
 
 - **Simulated:** `now` is fixed at 09:00 in **both** builds (by design, for repeatable tests). All bookings are fictional.
 - **Incomplete:** the Appsmith mobile layout was not verified. Appsmith Git integration was not tested.
-- **Not done yet (needs my decision):** public GitHub repo, live demo link (GitHub Pages and a public Appsmith
-  link), Appsmith JSON export file, and the submission email.
+- **Published:** public GitHub repo, GitHub Pages live demo and public Appsmith app, each checked in a logged-out
+  browser (`screenshots/publish_*.png`). The Appsmith export is in `lowcode/`.

@@ -49,6 +49,10 @@ python3 test_booking.py
 
 ## Practice #12 — code-based vs low-code
 
+**Live demos:** [code-based (GitHub Pages)](https://nurdauletkalm.github.io/smart-campus-room-checker-p12/) ·
+[low-code (Appsmith)](https://app.appsmith.com/app/smart-campus-room-checker-low-code/page1-6b05a6ca5441f3e820a02aa4) ·
+**Report:** [docs/practice12/REPORT.md](docs/practice12/REPORT.md)
+
 Branch `p12/code-vs-lowcode` (baseline tag `p12-baseline`). The app now takes a **start time (HH:MM) and a duration**
 and returns `available`, a reason code (`OK`, `OVERLAP`, `BLOCKED`, `INVALID_DURATION`, `PAST_START`, `INVALID_INPUT`)
 and a message. The Practice #10 rule engine `src/lib/availability.ts` is unchanged.
