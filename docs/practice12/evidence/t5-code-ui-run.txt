@@ -1,0 +1,52 @@
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_00_app_loaded.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T1.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T2.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T3.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T4.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T5.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T6.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T7.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_T8.png (1920x1200)
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\code_mobile_390px.png (1920x1200)
+[
+  {
+    "id": "T1",
+    "reason": "OK",
+    "text": "AvailableOK Room 304 is free from 11:30–12:30 (60 min)."
+  },
+  {
+    "id": "T2",
+    "reason": "OVERLAP",
+    "text": "UnavailableOVERLAP 10:30–11:30 overlaps existing booking 10:00–11:00 (Robotics Club (fictional))."
+  },
+  {
+    "id": "T3",
+    "reason": "BLOCKED",
+    "text": "UnavailableBLOCKED Room 304 is blocked — no requests can be accepted."
+  },
+  {
+    "id": "T4",
+    "reason": "INVALID_DURATION",
+    "text": "UnavailableINVALID_DURATION Duration must be a whole number of minutes from 1 to 120."
+  },
+  {
+    "id": "T5",
+    "reason": "INVALID_DURATION",
+    "text": "UnavailableINVALID_DURATION Duration must be a whole number of minutes from 1 to 120."
+  },
+  {
+    "id": "T6",
+    "reason": "PAST_START",
+    "text": "UnavailablePAST_START Start time 08:00 is not in the future (current time is 09:00)."
+  },
+  {
+    "id": "T7",
+    "reason": "OK",
+    "text": "AvailableOK Room 304 is free from 11:00–13:00 (120 min)."
+  },
+  {
+    "id": "T8",
+    "reason": "UNCHANGED",
+    "text": "Booking data unchanged after 7 checks (T8)"
+  }
+]
