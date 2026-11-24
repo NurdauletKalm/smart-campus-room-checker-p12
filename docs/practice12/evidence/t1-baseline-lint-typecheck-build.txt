@@ -1,0 +1,21 @@
+
+> smart-campus-room-checker@0.0.0 lint
+> eslint .
+
+
+> smart-campus-room-checker@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.app.json
+
+
+> smart-campus-room-checker@0.0.0 build
+> vite build
+
+vite v5.4.21 building for production...
+transforming...
+✓ 1471 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.50 kB │ gzip:  0.34 kB
+dist/assets/index-Ddzrpgpk.css   10.06 kB │ gzip:  2.67 kB
+dist/assets/index-Cwp9gxvb.js   154.63 kB │ gzip: 49.48 kB
+✓ built in 1.80s
