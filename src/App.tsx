@@ -1,54 +1,33 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CalendarClock, CheckCircle2, Clock, Lock, ShieldCheck, Unlock, XCircle } from 'lucide-react';
-import { type Booking, type CheckResult, DAY_MINUTES, canBook, parseMinutes, toHHMM } from './lib/availability';
+import { DAY_MINUTES, MAX_DURATION, toHHMM } from './lib/availability';
+import { type Decision, checkRoom } from './lib/checker';
+import { parseClock } from './lib/validation';
+import { BOOKINGS, NOW, ROOM_NAME, TEST_CASES } from './data/fixtures';
 
-// Fictional, read-only datasets for Room 304 (no real people, no database).
-const DATASETS: Record<string, { name: string; bookings: Booking[] }> = {
-  single: {
-    name: 'Single booking [(600, 660)]',
-    bookings: [{ start: 600, end: 660, label: 'Robotics Club (fictional)' }],
-  },
-  multiple: {
-    name: 'Multiple bookings [(600, 660), (780, 840)]',
-    bookings: [
-      { start: 600, end: 660, label: 'Robotics Club (fictional)' },
-      { start: 780, end: 840, label: 'Study Group B (fictional)' },
-    ],
-  },
-};
-
-const PRESETS = [
-  { label: '660 → 720', start: 660, end: 720, hint: 'AC4 touching endpoint' },
-  { label: '630 → 690', start: 630, end: 690, hint: 'AC4 overlap' },
-  { label: '720 → 840', start: 720, end: 840, hint: 'AC2 exactly 120 min' },
-  { label: '720 → 841', start: 720, end: 841, hint: 'AC2 121 min' },
-  { label: '540 → 570', start: 540, end: 570, hint: 'AC1 starts now' },
-];
+// UI display layer only: all rules live in src/lib (validation.ts → availability.ts → checker.ts).
+const SNAPSHOT = JSON.stringify(BOOKINGS);
+const PRESETS = TEST_CASES.filter((t) => t.id !== 'T8');
 
 export default function App() {
-  const [nowInput, setNowInput] = useState('540');
+  const [startTime, setStartTime] = useState('11:30');
+  const [duration, setDuration] = useState('60');
   const [blocked, setBlocked] = useState(false);
-  const [datasetKey, setDatasetKey] = useState<keyof typeof DATASETS>('single');
-  const [startInput, setStartInput] = useState('660');
-  const [endInput, setEndInput] = useState('720');
-  const [result, setResult] = useState<CheckResult | null>(null);
+  const [result, setResult] = useState<Decision | null>(null);
+  const [checks, setChecks] = useState(0);
 
-  const bookings = DATASETS[datasetKey].bookings;
-  const now = parseMinutes(nowInput);
-  const start = parseMinutes(startInput);
-  const end = parseMinutes(endInput);
+  const unchanged = JSON.stringify(BOOKINGS) === SNAPSHOT;
+  const preview = useMemo(() => {
+    const s = parseClock(startTime);
+    const d = Number(duration);
+    return Number.isNaN(s) || !Number.isInteger(d) || d < 1 ? null : { s, e: Math.min(s + d, DAY_MINUTES) };
+  }, [startTime, duration]);
 
+  const reset = () => setResult(null);
   const runCheck = () => {
-    setResult(canBook(start, end, now, blocked, bookings));
+    setResult(checkRoom({ startTime, duration }, { now: NOW, blocked, bookings: BOOKINGS }));
+    setChecks((c) => c + 1);
   };
-
-  const applyPreset = (s: number, e: number) => {
-    setStartInput(String(s));
-    setEndInput(String(e));
-    setResult(null);
-  };
-
-  const sorted = [...bookings].sort((a, b) => a.start - b.start);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
@@ -56,43 +35,29 @@ export default function App() {
         <div className="mx-auto max-w-5xl px-4 py-5 flex items-center gap-3">
           <CalendarClock className="h-8 w-8 shrink-0" />
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold">Room 304 — Innovation Lab</h1>
-            <p className="text-indigo-100 text-sm">Smart Campus Room Availability Checker · fictional data · read-only</p>
+            <h1 className="text-xl sm:text-2xl font-bold">{ROOM_NAME}</h1>
+            <p className="text-indigo-100 text-sm">
+              Smart Campus Room Availability Checker · Practice #12 code-based build · fictional data · read-only
+            </p>
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-6 grid gap-6 lg:grid-cols-3">
-        {/* Test conditions */}
         <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:col-span-1">
           <h2 className="font-semibold mb-4 flex items-center gap-2">
-            <Clock className="h-5 w-5 text-indigo-600" /> Test Conditions
+            <Clock className="h-5 w-5 text-indigo-600" /> Conditions
           </h2>
-          <label className="block text-sm font-medium mb-1" htmlFor="now">
-            Current time <code>now</code> (minutes, 0–1439)
-          </label>
-          <div className="flex items-center gap-2 mb-4">
-            <input
-              id="now"
-              type="number"
-              min={0}
-              max={1439}
-              value={nowInput}
-              onChange={(e) => {
-                setNowInput(e.target.value);
-                setResult(null);
-              }}
-              className="w-28 rounded-lg border border-slate-300 px-3 py-2"
-            />
-            <span className="text-xs rounded bg-slate-100 px-2 py-1">{toHHMM(now)}</span>
-          </div>
-
+          <p className="text-sm mb-4">
+            Current time (simulated): <span className="rounded bg-slate-100 px-2 py-1 font-mono">{toHHMM(NOW)}</span>
+          </p>
           <p className="text-sm font-medium mb-1">Room status</p>
           <button
             id="toggle-blocked"
+            aria-pressed={blocked}
             onClick={() => {
               setBlocked(!blocked);
-              setResult(null);
+              reset();
             }}
             className={`w-full mb-4 flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${
               blocked ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
@@ -101,74 +66,62 @@ export default function App() {
             {blocked ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
             {blocked ? 'Blocked' : 'Open'}
           </button>
-
-          <label className="block text-sm font-medium mb-1" htmlFor="dataset">
-            Existing bookings dataset (read-only)
-          </label>
-          <select
-            id="dataset"
-            value={datasetKey}
-            onChange={(e) => {
-              setDatasetKey(e.target.value as keyof typeof DATASETS);
-              setResult(null);
-            }}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-          >
-            {Object.entries(DATASETS).map(([key, ds]) => (
-              <option key={key} value={key}>
-                {ds.name}
-              </option>
-            ))}
-          </select>
+          <p id="snapshot" className={`text-xs rounded-lg px-3 py-2 ${unchanged ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>
+            Booking data {unchanged ? 'unchanged' : 'CHANGED'} after {checks} check{checks === 1 ? '' : 's'} (T8)
+          </p>
         </section>
 
-        {/* Check form + result */}
         <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:col-span-2">
           <h2 className="font-semibold mb-4">Check a Time Request</h2>
-          <div className="grid grid-cols-2 gap-3 mb-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
             <div>
               <label className="block text-sm font-medium mb-1" htmlFor="start">
-                Start (minutes)
+                Start time (HH:MM)
               </label>
               <input
                 id="start"
-                type="number"
-                value={startInput}
+                type="time"
+                value={startTime}
                 onChange={(e) => {
-                  setStartInput(e.target.value);
-                  setResult(null);
+                  setStartTime(e.target.value);
+                  reset();
                 }}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2"
               />
-              <span className="text-xs text-slate-500">= {toHHMM(start)}</span>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="end">
-                End (minutes)
+              <label className="block text-sm font-medium mb-1" htmlFor="duration">
+                Duration (minutes, 1–{MAX_DURATION})
               </label>
               <input
-                id="end"
+                id="duration"
                 type="number"
-                value={endInput}
+                inputMode="numeric"
+                value={duration}
                 onChange={(e) => {
-                  setEndInput(e.target.value);
-                  setResult(null);
+                  setDuration(e.target.value);
+                  reset();
                 }}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2"
               />
-              <span className="text-xs text-slate-500">= {toHHMM(end)}</span>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            {PRESETS.map((p) => (
+          <div className="flex flex-wrap gap-2 mb-4" aria-label="Test presets">
+            {PRESETS.map((t) => (
               <button
-                key={p.label}
-                title={p.hint}
-                onClick={() => applyPreset(p.start, p.end)}
+                key={t.id}
+                data-test={t.id}
+                title={t.name}
+                onClick={() => {
+                  setStartTime(t.start!);
+                  setDuration(t.duration!);
+                  setBlocked(t.blocked!);
+                  reset();
+                }}
                 className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs text-indigo-700 hover:bg-indigo-100"
               >
-                {p.label}
+                {t.id}: {t.start} · {t.duration} min{t.blocked ? ' · blocked' : ''}
               </button>
             ))}
           </div>
@@ -185,6 +138,7 @@ export default function App() {
             <div
               id="result"
               role="status"
+              data-reason={result.reason}
               className={`mt-4 rounded-lg border p-4 flex items-start gap-3 ${
                 result.available ? 'border-emerald-300 bg-emerald-50' : 'border-rose-300 bg-rose-50'
               }`}
@@ -197,7 +151,7 @@ export default function App() {
               <div>
                 <p className={`font-bold ${result.available ? 'text-emerald-700' : 'text-rose-700'}`}>
                   {result.available ? 'Available' : 'Unavailable'}
-                  {!result.available && <span className="ml-2 text-xs font-normal">({result.rule})</span>}
+                  <code className="ml-2 text-xs font-normal">{result.reason}</code>
                 </p>
                 <p className="text-sm">{result.message}</p>
               </div>
@@ -205,12 +159,11 @@ export default function App() {
           )}
         </section>
 
-        {/* Timeline */}
         <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:col-span-3">
           <h2 className="font-semibold mb-3">Day Timeline (00:00–24:00)</h2>
           <div className="relative h-10 rounded-lg bg-slate-100 overflow-hidden">
-            <div className="absolute inset-y-0 bg-slate-300/70" style={{ left: 0, width: `${(now / DAY_MINUTES) * 100}%` }} />
-            {sorted.map((b) => (
+            <div className="absolute inset-y-0 bg-slate-300/70" style={{ left: 0, width: `${(NOW / DAY_MINUTES) * 100}%` }} />
+            {BOOKINGS.map((b) => (
               <div
                 key={b.start}
                 className="absolute inset-y-1 rounded bg-rose-400"
@@ -218,10 +171,10 @@ export default function App() {
                 title={`${toHHMM(b.start)}–${toHHMM(b.end)}`}
               />
             ))}
-            {!Number.isNaN(start) && !Number.isNaN(end) && end > start && (
+            {preview && (
               <div
                 className="absolute inset-y-3 rounded bg-indigo-500/70"
-                style={{ left: `${(start / DAY_MINUTES) * 100}%`, width: `${((end - start) / DAY_MINUTES) * 100}%` }}
+                style={{ left: `${(preview.s / DAY_MINUTES) * 100}%`, width: `${((preview.e - preview.s) / DAY_MINUTES) * 100}%` }}
               />
             )}
           </div>
@@ -232,32 +185,30 @@ export default function App() {
             <span>18:00</span>
             <span>24:00</span>
           </div>
-
           <h3 className="mt-4 text-sm font-medium">
-            Existing bookings <span className="text-slate-500">({bookings.length} slot{bookings.length === 1 ? '' : 's'} · read-only)</span>
+            Existing bookings <span className="text-slate-500">({BOOKINGS.length} · read-only)</span>
           </h3>
           <ul className="mt-2 space-y-1 text-sm">
-            {sorted.map((b) => (
+            {BOOKINGS.map((b) => (
               <li key={b.start} className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-rose-400" />
-                {toHHMM(b.start)}–{toHHMM(b.end)} · [{b.start}, {b.end}) · {b.label}
+                {toHHMM(b.start)}–{toHHMM(b.end)} · {b.label}
               </li>
             ))}
           </ul>
         </section>
 
-        {/* Rules */}
         <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:col-span-3">
           <h2 className="font-semibold mb-3 flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-indigo-600" /> Acceptance Rules
+            <ShieldCheck className="h-5 w-5 text-indigo-600" /> Shared Acceptance Criteria (Practice #12)
           </h2>
           <ul className="grid gap-2 sm:grid-cols-2 text-sm">
-            <li><b>AC1</b> — whole minutes, 0 ≤ start &lt; end ≤ 1440, start &gt; now.</li>
-            <li><b>AC2</b> — duration end − start ≤ 120 minutes.</li>
-            <li><b>AC3</b> — a blocked room rejects every request.</li>
-            <li><b>AC4</b> — overlap rejected; touching endpoints allowed.</li>
-            <li><b>AC5</b> — clear Available / Unavailable; bookings never mutated.</li>
-            <li><b>AC6</b> — readable feedback and a usable mobile layout.</li>
+            <li><b>AC1</b> — start time must be in the future.</li>
+            <li><b>AC2</b> — duration &gt; 0 and ≤ {MAX_DURATION} minutes.</li>
+            <li><b>AC3</b> — overlapping bookings are unavailable (touching ends are fine).</li>
+            <li><b>AC4</b> — a blocked room is unavailable.</li>
+            <li><b>AC5</b> — clear decision; existing bookings never change.</li>
+            <li><b>AC6</b> — invalid input gets understandable feedback.</li>
           </ul>
         </section>
       </main>

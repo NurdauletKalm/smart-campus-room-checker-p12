@@ -1,0 +1,28 @@
+{
+  "$comment": "Practice #12 shared contract. Used unchanged by the code-based app (src/) and the Appsmith low-code app (lowcode/). Fictional data only.",
+  "room": "Room 304 - Innovation Lab (fictional)",
+  "now": "09:00",
+  "maxDurationMinutes": 120,
+  "bookings": [
+    { "start": "10:00", "end": "11:00", "label": "Robotics Club (fictional)" },
+    { "start": "13:00", "end": "14:00", "label": "Study Group B (fictional)" }
+  ],
+  "reasonCodes": {
+    "OK": "Room is free for the whole interval.",
+    "OVERLAP": "Interval overlaps an existing booking (touching endpoints are allowed).",
+    "BLOCKED": "Room is blocked; every valid request is rejected.",
+    "INVALID_DURATION": "Duration is not a whole number from 1 to 120 minutes.",
+    "PAST_START": "Start time is not strictly after the current time (now).",
+    "INVALID_INPUT": "Start time is missing or malformed, or the interval would end after 24:00."
+  },
+  "tests": [
+    { "id": "T1", "name": "valid free interval", "start": "11:30", "duration": "60", "blocked": false, "expect": { "available": true, "reason": "OK" } },
+    { "id": "T2", "name": "overlap with existing booking", "start": "10:30", "duration": "60", "blocked": false, "expect": { "available": false, "reason": "OVERLAP" } },
+    { "id": "T3", "name": "blocked room", "start": "11:30", "duration": "60", "blocked": true, "expect": { "available": false, "reason": "BLOCKED" } },
+    { "id": "T4", "name": "duration = 0", "start": "11:30", "duration": "0", "blocked": false, "expect": { "available": false, "reason": "INVALID_DURATION" } },
+    { "id": "T5", "name": "duration = 121", "start": "11:30", "duration": "121", "blocked": false, "expect": { "available": false, "reason": "INVALID_DURATION" } },
+    { "id": "T6", "name": "past start time", "start": "08:00", "duration": "30", "blocked": false, "expect": { "available": false, "reason": "PAST_START" } },
+    { "id": "T7", "name": "adjacent non-overlapping (11:00-13:00 between both bookings)", "start": "11:00", "duration": "120", "blocked": false, "expect": { "available": true, "reason": "OK" } },
+    { "id": "T8", "name": "bookings unchanged after T1-T7", "expect": { "bookingsUnchanged": true } }
+  ]
+}
