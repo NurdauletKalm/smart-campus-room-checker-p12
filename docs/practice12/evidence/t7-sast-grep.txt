@@ -1,0 +1,9 @@
+# SAST-style grep for dangerous sinks and secrets (2026-11-24T20:17:55+05:00)
+## dangerouslySetInnerHTML / innerHTML / eval / new Function
+none found
+## fetch / XMLHttpRequest / external URLs
+none found
+## secrets (key|token|secret|password)
+lowcode/Checker.jsobject.js:3:  // Same contract as shared/contract.json. Uses only Appsmith built-ins (no libraries, no APIs, no secrets).
+## .env files
+none

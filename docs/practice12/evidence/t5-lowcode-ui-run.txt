@@ -1,0 +1,52 @@
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_00_app_loaded.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T1.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T2.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T3.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T4.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T5.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T6.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T7.png (1920x1200)
+front: Smart Campus Room Checker Low-code - Google Chrome
+saved C:\Users\tiker\Downloads\Practice12_Kalmurzaev_Nurdaulet\smart-campus-room-checker\docs\practice12\screenshots\lowcode_T8_and_selftest_table.png (1920x1200)
+[
+  {
+    "id": "T1",
+    "text": "✅ Available [OK] Room 304 is free from 11:30–12:30 (60 min)."
+  },
+  {
+    "id": "T2",
+    "text": "❌ Unavailable [OVERLAP] 10:30–11:30 overlaps existing booking 10:00–11:00 (Robotics Club (fictional))."
+  },
+  {
+    "id": "T3",
+    "text": "❌ Unavailable [BLOCKED] Room 304 is blocked — no requests can be accepted."
+  },
+  {
+    "id": "T4",
+    "text": "❌ Unavailable [INVALID_DURATION] Duration must be a whole number of minutes from 1 to 120."
+  },
+  {
+    "id": "T5",
+    "text": "❌ Unavailable [INVALID_DURATION] Duration must be a whole number of minutes from 1 to 120."
+  },
+  {
+    "id": "T6",
+    "text": "❌ Unavailable [PAST_START] Start time 08:00 is not in the future (current time is 09:00)."
+  },
+  {
+    "id": "T7",
+    "text": "✅ Available [OK] Room 304 is free from 11:00–13:00 (120 min)."
+  },
+  {
+    "id": "T8",
+    "text": "Booking data unchanged after 7 checks (T8)"
+  }
+]

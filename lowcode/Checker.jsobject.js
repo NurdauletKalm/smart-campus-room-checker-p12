@@ -1,7 +1,7 @@
-// Appsmith JS Object "Checker" — paste the whole export default {...} into a new JS Object.
-// Same contract as shared/contract.json. Uses only Appsmith built-ins (no libraries, no APIs, no secrets).
-// Widgets it reads: StartInput (Input, text), DurationInput (Input, number), BlockedSwitch (Switch).
 export default {
+  // Appsmith JS Object "Checker" — paste the whole export default {...} into a new JS Object.
+  // Same contract as shared/contract.json. Uses only Appsmith built-ins (no libraries, no APIs, no secrets).
+  // Widgets it reads: StartInput (Input, text), DurationInput (Input, number), BlockedSwitch (Switch).
   NOW: '09:00',
   MAX: 120,
   BOOKINGS: [
@@ -67,10 +67,10 @@ export default {
     const before = JSON.stringify(this.BOOKINGS);
     const rows = cases.map(([id, s, d, bl, av, rc]) => {
       const r = this.decide(s, d, bl);
-      return { id, start: s, duration: d, blocked: bl, expected: (av ? 'Available ' : 'Unavailable ') + rc, observed: (r.available ? 'Available ' : 'Unavailable ') + r.reason, pass: r.available === av && r.reason === rc ? 'PASS' : 'FAIL' };
+      return { id, start: s, duration: d, blocked: bl ? 'yes' : 'no', expected: (av ? '✓ ' : '✗ ') + rc, observed: (r.available ? '✓ ' : '✗ ') + r.reason, pass: r.available === av && r.reason === rc ? 'PASS' : 'FAIL' };
     });
     const same = before === JSON.stringify(this.BOOKINGS);
-    rows.push({ id: 'T8', start: '-', duration: '-', blocked: '-', expected: 'bookings unchanged', observed: same ? 'bookings unchanged' : 'bookings CHANGED', pass: same ? 'PASS' : 'FAIL' });
+    rows.push({ id: 'T8', start: '-', duration: '-', blocked: '-', expected: 'data unchanged', observed: same ? 'data unchanged' : 'data CHANGED', pass: same ? 'PASS' : 'FAIL' });
     return rows;
   },
 };

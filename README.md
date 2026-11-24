@@ -46,3 +46,16 @@ python3 test_booking.py
 - `python/test_booking.py` — 12 unit tests.
 - `AGENTS.md` — rules for AI coding agents (scope, safe commands, forbidden actions, review gate).
 - `docs/practice10/` — Practice #10 risk review, risk register, audits and recorded evidence.
+
+## Practice #12 — code-based vs low-code
+
+Branch `p12/code-vs-lowcode` (baseline tag `p12-baseline`). The app now takes a **start time (HH:MM) and a duration**
+and returns `available`, a reason code (`OK`, `OVERLAP`, `BLOCKED`, `INVALID_DURATION`, `PAST_START`, `INVALID_INPUT`)
+and a message. The Practice #10 rule engine `src/lib/availability.ts` is unchanged.
+
+- `shared/contract.json` holds the fictional bookings and the T1–T8 table, shared by both builds.
+- `src/lib/validation.ts` → `src/lib/checker.ts` → `src/App.tsx`: the validation, decision and UI layers.
+- `tests/practice12.contract.test.ts` runs T1–T8 from the contract, plus edge cases (`npm test`, 51 tests in total).
+- `lowcode/Checker.jsobject.js` is the Appsmith JS Object used by the low-code build.
+- `docs/practice12/REPORT.md` is the report: requirements sheet, test table, comparison matrix, security checklist, AI reflection.
+- `docs/practice12/screenshots/` holds full-screen evidence and `docs/practice12/evidence/` holds the raw logs.

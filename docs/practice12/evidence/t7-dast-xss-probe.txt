@@ -1,0 +1,20 @@
+saved C:/Users/tiker/Downloads/Practice12_Kalmurzaev_Nurdaulet/smart-campus-room-checker/docs/practice12/screenshots/security_dast_lowcode_xss_probe.png (1920x1200)
+saved C:/Users/tiker/Downloads/Practice12_Kalmurzaev_Nurdaulet/smart-campus-room-checker/docs/practice12/screenshots/security_dast_code_xss_probe.png (1920x1200)
+[
+  {
+    "app": "low-code (Appsmith deployed)",
+    "field": "Start time",
+    "payload": "<img src=x onerror=alert(1)>",
+    "result": "❌ Unavailable [INVALID_INPUT] Enter a start time in 24-hour HH:MM format, e.g. 11:30.",
+    "dialogs": 0,
+    "injectedImgs": 0
+  },
+  {
+    "app": "code-based (localhost)",
+    "field": "Duration (forced to text via DevTools)",
+    "payload": "<img src=x onerror=alert(1)>",
+    "result": "UnavailableINVALID_DURATION Duration must be a whole number of minutes from 1 to 120.",
+    "dialogs": 0,
+    "injectedImgs": 0
+  }
+]
